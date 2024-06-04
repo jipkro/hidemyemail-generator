@@ -3,6 +3,7 @@ import datetime
 import os
 from typing import Union, List, Optional
 import re
+import requests
 
 from rich.text import Text
 from rich.prompt import IntPrompt
@@ -13,6 +14,7 @@ from icloud import HideMyEmail
 
 
 MAX_CONCURRENT_TASKS = 10
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1247538256162197627/lAgMP_1xpxG0AhfI_n9xFbHYwjE8XyDQlqdt_UCmoz1K3Mi1dLrbxsQ_eUUDNNmBlmoH"
 
 
 class RichHideMyEmail(HideMyEmail):
@@ -169,11 +171,24 @@ class RichHideMyEmail(HideMyEmail):
 
         self.console.print(self.table)
 
+    def send_discord_message(self, new_emails_count: int) -> None:
+        with open("emails.txt", "r") as f:
+            total_emails_count = len(f.readlines())
+
+        message = (
+            f"Successfully generated {new_emails_count} new email(s). "
+            f"Total number of generated emails: {total_emails_count}."
+        )
+        
+        payload = {"content": message}
+        requests.post(DISCORD_WEBHOOK_URL, json=payload)
+
 
 async def generate(count: Optional[int]) -> None:
     async with RichHideMyEmail() as hme:
         while True:
-            await hme.generate(5)
+            new_emails = await hme.generate(7)
+            hme.send_discord_message(len(new_emails))
             await asyncio.sleep(31 * 60)  # wait for 31 minutes before next generation
 
 
