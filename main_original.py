@@ -1,18 +1,17 @@
 import asyncio
 import datetime
 import os
-import re
-import time
 from typing import Union, List, Optional
-
+import re
 import requests
-from rich.console import Console
-from rich.prompt import IntPrompt
-from rich.table import Table
+
 from rich.text import Text
-from selenium import webdriver
+from rich.prompt import IntPrompt
+from rich.console import Console
+from rich.table import Table
 
 from icloud import HideMyEmail
+
 
 MAX_CONCURRENT_TASKS = 10
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1247538256162197627/lAgMP_1xpxG0AhfI_n9xFbHYwjE8XyDQlqdt_UCmoz1K3Mi1dLrbxsQ_eUUDNNmBlmoH"
@@ -186,44 +185,11 @@ class RichHideMyEmail(HideMyEmail):
 
 
 async def generate(count: Optional[int]) -> None:
-    # Define the URL
-    url = "https://www.icloud.com/settings/"
-
-    # Set up the Selenium WebDriver (using Chrome in this example)
-    options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(options=options)
-
-    try:
-        # Open the URL
-        driver.get(url)
-
-        # Wait for user to press Enter in the console after completing necessary actions
-        input("Press Enter after completing the manual steps...")
-
+    async with RichHideMyEmail() as hme:
         while True:
-            # Refresh the page to get new cookies
-            driver.refresh()
-            time.sleep(5)  # Give some time for the page to refresh
-
-            # Get the cookies
-            cookies = driver.get_cookies()
-            
-            # Format the cookies as semicolon-separated name=value pairs
-            cookie_string = "; ".join([f"{cookie['name']}={cookie['value']}" for cookie in cookies])
-            
-            # Save the formatted cookies string to cookie.txt
-            with open("cookie.txt", "w") as f:
-                f.write(cookie_string)
-
-            async with RichHideMyEmail() as hme:
-                new_emails = await hme.generate(1)
-                hme.send_discord_message(len(new_emails))
-            
-            await asyncio.sleep(6)  # wait for 31 minutes before next iteration
-
-    except KeyboardInterrupt:
-        # Handle manual interruption gracefully
-        pass
+            new_emails = await hme.generate(7)
+            hme.send_discord_message(len(new_emails))
+            await asyncio.sleep(31 * 60)  # wait for 31 minutes before next generation
 
 
 async def list(active: bool, search: str) -> None:
