@@ -172,7 +172,9 @@ class RichHideMyEmail(HideMyEmail):
 
 async def generate(count: Optional[int]) -> None:
     async with RichHideMyEmail() as hme:
-        await hme.generate(count)
+        while True:
+            await hme.generate(5)
+            await asyncio.sleep(31 * 60)  # wait for 31 minutes before next generation
 
 
 async def list(active: bool, search: str) -> None:
