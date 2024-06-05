@@ -108,7 +108,7 @@ class RichHideMyEmail(HideMyEmail):
 
             if len(emails) > 0:
                 with open("emails.txt", "a+") as f:
-                    f.write(os.linesep.join(emails) + os.linesep)
+                    f.write(os.linesep.join(emails))
 
                 self.console.rule()
                 self.console.log(
