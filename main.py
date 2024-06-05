@@ -106,9 +106,12 @@ class RichHideMyEmail(HideMyEmail):
                     count -= MAX_CONCURRENT_TASKS
                     emails += batch
 
+
             if len(emails) > 0:
+                # Filter out any None values from emails list
+                emails = list(filter(None, emails))
                 with open("emails.txt", "a+") as f:
-                    f.write(os.linesep.join(emails))
+                    f.write(os.linesep.join(emails) + os.linesep)
 
                 self.console.rule()
                 self.console.log(
@@ -118,6 +121,7 @@ class RichHideMyEmail(HideMyEmail):
                 self.console.log(
                     f"[bold green]All done![/] Successfully generated [bold green]{len(emails)}[/] email(s)"
                 )
+
 
             return emails
         except KeyboardInterrupt:
