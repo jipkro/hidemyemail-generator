@@ -216,7 +216,7 @@ async def generate(count: Optional[int]) -> None:
                 f.write(cookie_string)
 
             async with RichHideMyEmail() as hme:
-                new_emails = await hme.generate(10)
+                new_emails = await hme.generate(5)
                 hme.send_discord_message(len(new_emails))
             
             await asyncio.sleep(31 * 60)  # wait for 31 minutes before next iteration
