@@ -174,7 +174,7 @@ class RichHideMyEmail(HideMyEmail):
 
     def send_discord_message(self, new_emails_count: int) -> None:
         with open("emails.txt", "r") as f:
-            total_emails_count = len(f.readlines())
+            total_emails_count = len([line for line in f if line.strip()])
 
         message = (
             f"Successfully generated {new_emails_count} new email(s). "
