@@ -82,7 +82,7 @@ class RichHideMyEmail(HideMyEmail):
             task = asyncio.ensure_future(self._generate_one())
             tasks.append(task)
 
-        return filter(lambda e: e is not None, await asyncio.gather(*tasks))
+        return list(filter(lambda e: e is not None, await asyncio.gather(*tasks)))
 
     async def generate(self, count: Optional[int]) -> List[str]:
         try:
